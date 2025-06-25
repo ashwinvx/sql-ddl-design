@@ -53,7 +53,7 @@ INSERT INTO flights
   (departure, arrival, airline, from_city, from_country, to_city, to_country) 
 SELECT departure, arrival, airline, from_city, from_country, to_city, to_country FROM tickets;
 
-ALTER TABLE tickets ADD COLUMN flightId int;
+ALTER TABLE tickets ADD COLUMN flightId int REFERENCES flights(id);
 
 UPDATE tickets SET flightId = 1 WHERE id = 1; 
 UPDATE tickets SET flightId = 2 WHERE id = 2; 
