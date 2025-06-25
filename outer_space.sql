@@ -17,24 +17,6 @@ CREATE TABLE planets
   moons TEXT[]
 );
 
-CREATE TABLE moons 
-(
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL
-);
-
-CREATE TABLE planet_moons (
-    id SERIAL PRIMARY KEY,
-    planetId int   NOT NULL,
-    moonId int   NOT NULL
-);
-
-ALTER TABLE planet_moons ADD CONSTRAINT fk_planet_moons_planetId FOREIGN KEY(planetId)
-REFERENCES planets (id);
-
-ALTER TABLE planet_moons ADD CONSTRAINT fk_planet_moons_moonId FOREIGN KEY(moonId)
-REFERENCES moons (id);
-
 INSERT INTO planets
   (name, orbital_period_in_years, orbits_around, galaxy, moons)
 VALUES
@@ -45,6 +27,40 @@ VALUES
   ('Proxima Centauri b', 0.03, 'Proxima Centauri', 'Milky Way', '{}'),
   ('Gliese 876 b', 0.23, 'Gliese 876', 'Milky Way', '{}');
 
+CREATE TABLE moons 
+(
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE planet_moons (
+    id SERIAL PRIMARY KEY,
+    planetId INTEGER REFERENCES planets(id),
+    moonId INTEGER REFERENCES moons(id)
+);
+
+CREATE TABLE stars (
+  id SERIAL PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE galaxies (
+  id SERIAL PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL
+);
+
+DROP TABLE planets;
+
+-- Modify planets table
+CREATE TABLE planets (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  orbital_period_in_years FLOAT NOT NULL,
+  star_id INTEGER REFERENCES stars(id),
+  galaxy_id INTEGER REFERENCES galaxies(id)
+);
+
+CREATE INDEX idx_planets_name ON planets(name);
 
 INSERT INTO moons (name) SELECT unnest(moons) FROM planets;
 
@@ -67,8 +83,6 @@ INSERT INTO planet_moons (planetId, moonId) VALUES
 (4,16),
 (4,17);
 
-
-ALTER TABLE planets DROP COLUMN moons;
 
 SELECT planets.name, orbital_period_in_years, orbits_around, galaxy, moons.name FROM planet_moons 
 JOIN planets ON planets.id= planetId 

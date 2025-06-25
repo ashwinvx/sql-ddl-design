@@ -37,43 +37,42 @@ VALUES
   ('Cory', 'Squibbes', '10D', '2019-01-20 19:30:00', '2019-01-20 22:45:00', 'Avianca Brasil', 'Sao Paolo', 'Brazil', 'Santiago', 'Chile');
 
 
-CREATE TABLE flights
-(
+-- 1. Passengers
+CREATE TABLE passengers (
   id SERIAL PRIMARY KEY,
-  departure TIMESTAMP NOT NULL,
-  arrival TIMESTAMP NOT NULL,
-  airline TEXT NOT NULL,
-  from_city TEXT NOT NULL,
-  from_country TEXT NOT NULL,
-  to_city TEXT NOT NULL,
-  to_country TEXT NOT NULL
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL
 );
 
-INSERT INTO flights 
-  (departure, arrival, airline, from_city, from_country, to_city, to_country) 
-SELECT departure, arrival, airline, from_city, from_country, to_city, to_country FROM tickets;
+-- 2. Airlines
+CREATE TABLE airlines (
+  id SERIAL PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL
+);
 
-ALTER TABLE tickets ADD COLUMN flightId int REFERENCES flights(id);
+-- 3. Locations
+CREATE TABLE locations (
+  id SERIAL PRIMARY KEY,
+  city TEXT NOT NULL,
+  country TEXT NOT NULL,
+  UNIQUE(city, country)
+);
 
-UPDATE tickets SET flightId = 1 WHERE id = 1; 
-UPDATE tickets SET flightId = 2 WHERE id = 2; 
-UPDATE tickets SET flightId = 3 WHERE id = 3; 
-UPDATE tickets SET flightId = 4 WHERE id = 4;  
-UPDATE tickets SET flightId = 5 WHERE id = 5; 
-UPDATE tickets SET flightId = 6 WHERE id = 6; 
-UPDATE tickets SET flightId = 7 WHERE id = 7; 
-UPDATE tickets SET flightId = 8 WHERE id = 8; 
-UPDATE tickets SET flightId = 9 WHERE id = 9; 
-UPDATE tickets SET flightId = 10 WHERE id = 10; 
+-- 4. Flights
+CREATE TABLE flights (
+  id SERIAL PRIMARY KEY,
+  airline_id INTEGER REFERENCES airlines(id),
+  from_location_id INTEGER REFERENCES locations(id),
+  to_location_id INTEGER REFERENCES locations(id),
+  departure TIMESTAMP NOT NULL,
+  arrival TIMESTAMP NOT NULL
+);
 
-ALTER TABLE tickets DROP COLUMN departure;
-ALTER TABLE tickets DROP COLUMN arrival;
-ALTER TABLE tickets DROP COLUMN airline;
-ALTER TABLE tickets DROP COLUMN from_city;
-ALTER TABLE tickets DROP COLUMN from_country;
-ALTER TABLE tickets DROP COLUMN to_city;
-ALTER TABLE tickets DROP COLUMN to_country;
+-- 5. Tickets
+CREATE TABLE tickets (
+  id SERIAL PRIMARY KEY,
+  passenger_id INTEGER REFERENCES passengers(id),
+  flight_id INTEGER REFERENCES flights(id),
+  seat TEXT NOT NULL
+);
 
-SELECT * FROM tickets;
-
-SELECT * FROM flights;
