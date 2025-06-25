@@ -35,3 +35,45 @@ VALUES
   ('Alvin', 'Leathes', '1A', '2018-12-22 14:42:00', '2018-12-22 15:56:00', 'American Airlines', 'Cedar Rapids', 'United States', 'Chicago', 'United States'),
   ('Berkie', 'Wycliff', '32B', '2019-02-06 16:28:00', '2019-02-06 19:18:00', 'American Airlines', 'Charlotte', 'United States', 'New Orleans', 'United States'),
   ('Cory', 'Squibbes', '10D', '2019-01-20 19:30:00', '2019-01-20 22:45:00', 'Avianca Brasil', 'Sao Paolo', 'Brazil', 'Santiago', 'Chile');
+
+
+CREATE TABLE flights
+(
+  id SERIAL PRIMARY KEY,
+  departure TIMESTAMP NOT NULL,
+  arrival TIMESTAMP NOT NULL,
+  airline TEXT NOT NULL,
+  from_city TEXT NOT NULL,
+  from_country TEXT NOT NULL,
+  to_city TEXT NOT NULL,
+  to_country TEXT NOT NULL
+);
+
+INSERT INTO flights 
+  (departure, arrival, airline, from_city, from_country, to_city, to_country) 
+SELECT departure, arrival, airline, from_city, from_country, to_city, to_country FROM tickets;
+
+ALTER TABLE tickets ADD COLUMN flightId int;
+
+UPDATE tickets SET flightId = 1 WHERE id = 1; 
+UPDATE tickets SET flightId = 2 WHERE id = 2; 
+UPDATE tickets SET flightId = 3 WHERE id = 3; 
+UPDATE tickets SET flightId = 4 WHERE id = 4;  
+UPDATE tickets SET flightId = 5 WHERE id = 5; 
+UPDATE tickets SET flightId = 6 WHERE id = 6; 
+UPDATE tickets SET flightId = 7 WHERE id = 7; 
+UPDATE tickets SET flightId = 8 WHERE id = 8; 
+UPDATE tickets SET flightId = 9 WHERE id = 9; 
+UPDATE tickets SET flightId = 10 WHERE id = 10; 
+
+ALTER TABLE tickets DROP COLUMN departure;
+ALTER TABLE tickets DROP COLUMN arrival;
+ALTER TABLE tickets DROP COLUMN airline;
+ALTER TABLE tickets DROP COLUMN from_city;
+ALTER TABLE tickets DROP COLUMN from_country;
+ALTER TABLE tickets DROP COLUMN to_city;
+ALTER TABLE tickets DROP COLUMN to_country;
+
+SELECT * FROM tickets;
+
+SELECT * FROM flights;
